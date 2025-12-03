@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Wei Liu" />
+
+<meta name="date" content="2025-11-28" />
+
+<title>Low Dimensional Example of MultiRFM</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Low Dimensional Example of MultiRFM</h1>
+<h4 class="author">Wei Liu</h4>
+<h4 class="date">2025-11-28</h4>
+
+
+
+<p>This vignette introduces the usage of MultiRFM for the analysis of
+low-dimensional multi-study multivariate data with heavy tail, by
+comparison with other methods.</p>
+<p>The package can be loaded with the command, and define some metric
+functions:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(MultiRFM)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>trace_statistic_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(H, H0){</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  tr_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">diag</span>(x))</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  mat1 <span class="ot">&lt;-</span> <span class="fu">t</span>(H0) <span class="sc">%*%</span> H <span class="sc">%*%</span> <span class="fu">qr.solve</span>(<span class="fu">t</span>(H) <span class="sc">%*%</span> H) <span class="sc">%*%</span> <span class="fu">t</span>(H) <span class="sc">%*%</span> H0</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">tr_fun</span>(mat1) <span class="sc">/</span> <span class="fu">tr_fun</span>(<span class="fu">t</span>(H0) <span class="sc">%*%</span> H0)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>trace_list_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(Hlist, H0list){</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  trvec <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">length</span>(Hlist))</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(trvec)){</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    trvec[i] <span class="ot">&lt;-</span> <span class="fu">trace_statistic_fun</span>(Hlist[[i]], H0list[[i]])</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  }</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">mean</span>(trvec))</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>}</span></code></pre></div>
+<div id="generate-the-simulated-data" class="section level2">
+<h2>Generate the simulated data</h2>
+<p>First, we generate the simulated data with heavy tail, where the
+error term follows from a multivariate t-distribution with degree of
+freedom 3.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># nu is set to</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>nvec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">150</span>,<span class="dv">200</span>);  q <span class="ot">&lt;-</span> <span class="dv">3</span>;qs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>); S <span class="ot">&lt;-</span> <span class="fu">length</span>(nvec)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>sigma2_eps <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>datList <span class="ot">&lt;-</span> <span class="fu">gendata_simu_multi</span>(<span class="at">seed=</span><span class="dv">1</span>, <span class="at">nvec=</span>nvec, <span class="at">p=</span>p, <span class="at">q=</span>q, <span class="at">qs=</span>qs, <span class="at">rho=</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">5</span>), <span class="at">err.type=</span><span class="st">&#39;mvt&#39;</span>, <span class="at">sigma2_eps =</span> sigma2_eps, <span class="at">nu=</span>nu)</span></code></pre></div>
+<p>Fit the MultiRFM model using the function <code>MultiRFM()</code> in
+the R package <code>MultiRFM</code>. Users can use
+<code>?MultiRFM</code> to see the details about this function. For two
+matrices <span class="math inline">\(\widehat D\)</span> and <span class="math inline">\(D\)</span>, we use trace statistic to measure
+their similarity. The trace statistic ranges from 0 to 1, with higher
+values indicating better performance.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>methodNames <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;MultiRFM&quot;</span>, <span class="st">&quot;MSFA-CAVI&quot;</span>, <span class="st">&quot;MSFA-SVI&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>metricMat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="at">nrow=</span><span class="fu">length</span>(methodNames), <span class="at">ncol=</span><span class="dv">5</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">colnames</span>(metricMat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;A_tr&#39;</span>, <span class="st">&#39;B_tr&#39;</span>,  <span class="st">&#39;F_tr&#39;</span>, <span class="st">&#39;H_tr&#39;</span>, <span class="st">&#39;Time&#39;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">row.names</span>(metricMat) <span class="ot">&lt;-</span> methodNames</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>XList <span class="ot">&lt;-</span> datList<span class="sc">$</span>Xlist;</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">MultiRFM</span>(XList, <span class="at">q=</span>q, <span class="at">qs=</span>qs)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#str(res)</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>metricMat[<span class="st">&quot;MultiRFM&quot;</span>,<span class="st">&#39;Time&#39;</span>] <span class="ot">&lt;-</span> res<span class="sc">$</span>time_use</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>metricMat[<span class="st">&quot;MultiRFM&quot;</span>,<span class="st">&#39;A_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_statistic_fun</span>(res<span class="sc">$</span>A, datList<span class="sc">$</span>A0)</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>metricMat[<span class="st">&quot;MultiRFM&quot;</span>,<span class="st">&#39;B_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(res<span class="sc">$</span>B, datList<span class="sc">$</span>Blist0)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>metricMat[<span class="st">&quot;MultiRFM&quot;</span>,<span class="st">&#39;F_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(res<span class="sc">$</span>F, datList<span class="sc">$</span>Flist)</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>metricMat[<span class="st">&quot;MultiRFM&quot;</span>,<span class="st">&#39;H_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(res<span class="sc">$</span>H, datList<span class="sc">$</span>Hlist)</span></code></pre></div>
+</div>
+<div id="compare-with-other-methods" class="section level2">
+<h2>Compare with other methods</h2>
+<p>We compare MultiRFM with two prominent methods: MSFA-CAVI and
+MSFA-SVI</p>
+<p>First, we implement MSFA-CAVI:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>X_s <span class="ot">&lt;-</span> <span class="fu">lapply</span>(XList, scale, <span class="at">scale=</span><span class="cn">FALSE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>hmu <span class="ot">&lt;-</span> <span class="fu">sapply</span>(XList, colMeans)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">library</span>(VIMSFA)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="do">### MSFA-CAVI</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;MSFA-CAVI&quot;</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>tic <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>cavi_est <span class="ot">&lt;-</span> <span class="fu">cavi_msfa</span>(X_s,  <span class="at">K=</span>q, <span class="at">J_s=</span>qs)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>toc <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>time_cavi <span class="ot">&lt;-</span> toc[<span class="dv">3</span>] <span class="sc">-</span> tic[<span class="dv">3</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>hLam <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(cbind, cavi_est<span class="sc">$</span>mean_psi_s)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>hF_cavi <span class="ot">&lt;-</span> hH_cavi <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="cf">for</span>(s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>S){</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  <span class="co"># s &lt;- 1</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>  hF_cavi[[s]] <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">Reduce</span>(cbind, cavi_est<span class="sc">$</span>mean_f[[s]]))</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>  hH_cavi[[s]] <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">Reduce</span>(cbind, cavi_est<span class="sc">$</span>mean_l[[s]]))</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>}</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-CAVI&quot;</span>,<span class="st">&#39;Time&#39;</span>]  <span class="ot">&lt;-</span> time_cavi</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-CAVI&quot;</span>,<span class="st">&#39;A_tr&#39;</span>]  <span class="ot">&lt;-</span> <span class="fu">trace_statistic_fun</span>(cavi_est<span class="sc">$</span>mean_phi, datList<span class="sc">$</span>A0)</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-CAVI&quot;</span>,<span class="st">&#39;B_tr&#39;</span>]  <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(cavi_est<span class="sc">$</span>mean_lambda_s, datList<span class="sc">$</span>Blist0)</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-CAVI&quot;</span>,<span class="st">&#39;F_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(hF_cavi, datList<span class="sc">$</span>Flist)</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-CAVI&quot;</span>,<span class="st">&#39;H_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(hH_cavi, datList<span class="sc">$</span>Hlist)</span></code></pre></div>
+<p>Next, we implement MSFA-SVI:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;MSFA-SVI&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>tic <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>svi_est <span class="ot">&lt;-</span> <span class="fu">svi_msfa</span>(X_s, <span class="at">K=</span>q, <span class="at">J_s=</span>qs, <span class="at">verbose =</span> <span class="dv">0</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>toc <span class="ot">&lt;-</span> <span class="fu">proc.time</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>time_svi <span class="ot">&lt;-</span> toc[<span class="dv">3</span>] <span class="sc">-</span> tic[<span class="dv">3</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>hLam <span class="ot">&lt;-</span> <span class="fu">Reduce</span>(cbind, svi_est<span class="sc">$</span>mean_psi_s)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>hF_cavi <span class="ot">&lt;-</span> hH_cavi <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="cf">for</span>(s <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>S){</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>  <span class="co"># s &lt;- 1</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>  hF_cavi[[s]] <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">Reduce</span>(cbind, svi_est<span class="sc">$</span>mean_f[[s]]))</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>  hH_cavi[[s]] <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">Reduce</span>(cbind, svi_est<span class="sc">$</span>mean_l[[s]]))</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a>}</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-SVI&quot;</span>,<span class="st">&#39;Time&#39;</span>]  <span class="ot">&lt;-</span> time_cavi</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-SVI&quot;</span>,<span class="st">&#39;A_tr&#39;</span>]  <span class="ot">&lt;-</span> <span class="fu">trace_statistic_fun</span>(svi_est<span class="sc">$</span>mean_phi, datList<span class="sc">$</span>A0)</span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-SVI&quot;</span>,<span class="st">&#39;B_tr&#39;</span>]  <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(svi_est<span class="sc">$</span>mean_lambda_s, datList<span class="sc">$</span>Blist0)</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-SVI&quot;</span>,<span class="st">&#39;F_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(hF_cavi, datList<span class="sc">$</span>Flist)</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a>metricMat[<span class="st">&quot;MSFA-SVI&quot;</span>,<span class="st">&#39;H_tr&#39;</span>] <span class="ot">&lt;-</span> <span class="fu">trace_list_fun</span>(hH_cavi, datList<span class="sc">$</span>Hlist)</span></code></pre></div>
+</div>
+<div id="visualize-the-comparison-of-performance" class="section level2">
+<h2>Visualize the comparison of performance</h2>
+<p>Next, we summarized the metrics for MultiRFM and other compared
+methods in a data.frame object.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>dat_metric <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(metricMat)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>dat_metric<span class="sc">$</span>Method <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">row.names</span>(dat_metric), <span class="at">levels=</span><span class="fu">row.names</span>(dat_metric))</span></code></pre></div>
+<p>Plot the results for MultiRFM and other methods, which suggests that
+MultiRFM achieves better estimation accuracy for the study-shared
+loading matrix A, study-specified loading matrix B and factor matrix H.
+MultiRFM significantly outperforms the compared methods in terms of
+estimation accuracy of B and H, as well as computational efficiency.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(cowplot)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">subset</span>(dat_metric, <span class="sc">!</span><span class="fu">is.na</span>(A_tr)), <span class="fu">aes</span>(<span class="at">x=</span> Method, <span class="at">y=</span>A_tr, <span class="at">fill=</span>Method)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">scale_x_discrete</span>(<span class="at">breaks=</span><span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">subset</span>(dat_metric, <span class="sc">!</span><span class="fu">is.na</span>(F_tr)), <span class="fu">aes</span>(<span class="at">x=</span> Method, <span class="at">y=</span>F_tr, <span class="at">fill=</span>Method)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">scale_x_discrete</span>(<span class="at">breaks=</span><span class="cn">NULL</span>)<span class="sc">+</span> <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">subset</span>(dat_metric, <span class="sc">!</span><span class="fu">is.na</span>(B_tr)), <span class="fu">aes</span>(<span class="at">x=</span> Method, <span class="at">y=</span>B_tr, <span class="at">fill=</span>Method)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">scale_x_discrete</span>(<span class="at">breaks=</span><span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">subset</span>(dat_metric, <span class="sc">!</span><span class="fu">is.na</span>(H_tr)), <span class="fu">aes</span>(<span class="at">x=</span> Method, <span class="at">y=</span>H_tr, <span class="at">fill=</span>Method)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">scale_x_discrete</span>(<span class="at">breaks=</span><span class="cn">NULL</span>)<span class="sc">+</span> <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span><span class="fu">subset</span>(dat_metric, <span class="sc">!</span><span class="fu">is.na</span>(Time)), <span class="fu">aes</span>(<span class="at">x=</span> Method, <span class="at">y=</span>Time, <span class="at">fill=</span>Method)) <span class="sc">+</span> <span class="fu">geom_bar</span>(<span class="at">stat=</span><span class="st">&quot;identity&quot;</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="cn">NULL</span>) <span class="sc">+</span> <span class="fu">scale_x_discrete</span>(<span class="at">breaks=</span><span class="cn">NULL</span>)<span class="sc">+</span> <span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="fu">plot_grid</span>(p1,p2,p3, p4,  p5, <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">ncol=</span><span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div id="select-the-parameters" class="section level2">
+<h2>Select the parameters</h2>
+<p>We applied the proposed ‘CUP’ method to select the number of factors.
+The results showed that the CUP method has the potential to identify the
+true values.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>datList <span class="ot">&lt;-</span> <span class="fu">gendata_simu_multi</span>(<span class="at">seed=</span><span class="dv">1</span>, <span class="at">nvec=</span>nvec, <span class="at">p=</span>p, <span class="at">q=</span>q, <span class="at">qs=</span>qs, <span class="at">rho=</span><span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">5</span>), <span class="at">err.type=</span><span class="st">&#39;mvt&#39;</span>, <span class="at">sigma2_eps =</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>                                sigma2_eps, <span class="at">nu=</span><span class="dv">3</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>XList <span class="ot">&lt;-</span> datList<span class="sc">$</span>Xlist;</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>q_max <span class="ot">&lt;-</span> <span class="dv">6</span>; qs_max <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>hq.list <span class="ot">&lt;-</span> <span class="fu">selectFac.MultiRFM</span>(XList,  <span class="at">q_max=</span>q_max, <span class="at">qs_max=</span>qs_max, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;hq = &quot;</span>, hq.list<span class="sc">$</span>q, <span class="st">&quot; VS true q = &quot;</span>, q)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="fu">message</span>(<span class="st">&quot;hqs.vec = &quot;</span>, <span class="fu">paste</span>(hq.list<span class="sc">$</span>qs, <span class="at">collapse =</span><span class="st">&quot;, &quot;</span>), <span class="st">&quot; VS true qs.vec = &quot;</span>, <span class="fu">paste</span>(qs, <span class="at">collapse =</span><span class="st">&quot;, &quot;</span>))</span></code></pre></div>
+<details>
+<summary>
+<strong>Session Info</strong>
+</summary>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; R version 4.4.1 (2024-06-14 ucrt)</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; Running under: Windows 11 x64 (build 26100)</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt; Matrix products: default</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; locale:</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; [1] LC_COLLATE=C                               </span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; [2] LC_CTYPE=Chinese (Simplified)_China.utf8   </span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; [3] LC_MONETARY=Chinese (Simplified)_China.utf8</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; [4] LC_NUMERIC=C                               </span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; [5] LC_TIME=Chinese (Simplified)_China.utf8    </span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; time zone: Asia/Shanghai</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; tzcode source: internal</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; attached base packages:</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt;  [1] digest_0.6.37     R6_2.5.1          fastmap_1.2.0     xfun_0.47        </span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt;  [5] cachem_1.1.0      knitr_1.48        htmltools_0.5.8.1 rmarkdown_2.28   </span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt;  [9] lifecycle_1.0.4   cli_3.6.3         sass_0.4.9        jquerylib_0.1.4  </span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; [13] compiler_4.4.1    rstudioapi_0.16.0 tools_4.4.1       evaluate_1.0.0   </span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; [17] bslib_0.8.0       yaml_2.3.10       rlang_1.1.4       jsonlite_1.8.9</span></span></code></pre></div>
+</details>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
